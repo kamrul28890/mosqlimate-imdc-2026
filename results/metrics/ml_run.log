@@ -1,4 +1,4 @@
-LGBM backtest: 4654 scored rows in 453.2s
+LGBM backtest: 4654 scored rows in 456.4s
 
 === Combined leaderboard (mean over all states/folds/horizons) ===
                   model         wis  dispersion  overprediction  underprediction   ae_median  coverage_50  coverage_80  coverage_90  coverage_95

@@ -19,6 +19,12 @@ from imdc.config import QUANTILE_LEVELS
 from imdc.features.panel import build_panel, build_prediction_features
 from imdc.features.panel import INCIDENCE_SCALE
 
+# Conservative defaults, kept after a tuning experiment. A grid search on the fold-2 panel's
+# internal time-block holdout preferred a deeper config (num_leaves=63, max_depth=7, ~5% lower
+# holdout pinball), but that config was WORSE on the actual backtest (lgbm WIS 1317 vs 1309;
+# ensemble 1294 vs 1288): it overfit the internal holdout, which does not represent forecasting
+# a full future season from EW25. This is the exact risk the plan flagged, so the conservative
+# defaults are retained. See reports/modeling_results_report for the finding.
 DEFAULT_PARAMS = {
     "objective": "quantile",
     "num_leaves": 31,

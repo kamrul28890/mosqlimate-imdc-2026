@@ -1,0 +1,29 @@
+Inverse-WIS weights (tuned on fold 1): {'climatological_quantile': 0.309, 'lgbm_quantile': 0.34, 'gru_negbin': 0.352}
+
+=== Final leaderboard (overall mean WIS) ===
+                  model         wis  coverage_50  coverage_80  coverage_90  coverage_95
+       ensemble_vincent 1287.551965     0.449721     0.752041     0.842071     0.874731
+        ensemble_invwis 1291.002119     0.469918     0.765793     0.852815     0.892780
+       mechanistic_traj 1296.209779     0.529222     0.782982     0.850236     0.889128
+          lgbm_quantile 1309.411019     0.485389     0.796304     0.885475     0.926730
+climatological_quantile 1326.907212     0.476150     0.734207     0.821014     0.849592
+             gru_negbin 1372.950646     0.323807     0.567254     0.677482     0.748818
+         seasonal_naive 1458.609264     0.448861     0.799098     0.882467     0.924581
+                  naive 1664.042911     0.401805     0.720670     0.804684     0.858616
+
+=== WIS by fold ===
+fold_id                      1       2       3      4
+model                                                
+climatological_quantile  386.0  3588.0   516.0  174.0
+ensemble_invwis          328.0  3607.0   420.0  202.0
+ensemble_vincent         343.0  3587.0   429.0  167.0
+gru_negbin               339.0  3955.0   354.0  176.0
+lgbm_quantile            351.0  3348.0   653.0  350.0
+mechanistic_traj         474.0  3354.0   545.0  198.0
+naive                    726.0  3833.0  1056.0  255.0
+seasonal_naive           500.0  3848.0   581.0  206.0
+
+=== Weight-tuning robustness (invWIS weights by tuning fold) ===
+  tune on fold 1: {climatological:0.31, lgbm:0.34, gru:0.35}
+  tune on fold 2: {climatological:0.34, lgbm:0.36, gru:0.30}
+  tune on fold 3: {climatological:0.31, lgbm:0.24, gru:0.45}
