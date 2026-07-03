@@ -18,11 +18,12 @@ from imdc.submission.validate import validate_submission, SubmissionError
 FOLD_SEASON = {1: 2023, 2: 2024, 3: 2025, 4: 2026}  # season_year = EW40 target year per fold
 
 
-def generate(model: str = "ensemble_vincent", disease: str = "dengue", ufs=MANDATORY_UFS):
-    scored = pd.read_csv(METRICS_DIR / "final_scored.csv", parse_dates=["date"])
+def generate(model: str = "ensemble_vincent", disease: str = "dengue", ufs=MANDATORY_UFS,
+             scored_file: str = "final_scored.csv"):
+    scored = pd.read_csv(METRICS_DIR / scored_file, parse_dates=["date"])
     preds = scored[scored["model"] == model]
     if preds.empty:
-        raise SystemExit(f"model '{model}' not found in final_scored.csv")
+        raise SystemExit(f"model '{model}' not found in {scored_file}")
 
     out_root = SUBMISSIONS_DIR / "validation" / disease
     n_ok, n_fail = 0, 0
