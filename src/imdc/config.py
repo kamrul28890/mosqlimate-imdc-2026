@@ -62,3 +62,14 @@ QUANTILE_LEVEL_TO_COLUMN = dict(zip(QUANTILE_LEVELS, QUANTILE_COLUMNS))
 QUANTILE_COLUMN_TO_LEVEL = dict(zip(QUANTILE_COLUMNS, QUANTILE_LEVELS))
 
 N_FOLDS = 4
+
+# UF abbreviation -> 2-digit IBGE state code (the adm_1 value in submissions).
+UF_TO_ADM1 = {
+    "RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
+    "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25, "PE": 26, "AL": 27,
+    "SE": 28, "BA": 29, "MG": 31, "ES": 32, "RJ": 33, "SP": 35, "PR": 41,
+    "SC": 42, "RS": 43, "MS": 50, "MT": 51, "GO": 52, "DF": 53,
+}
+
+# Disease code expected by the Mosqlimate API.
+DISEASE_CODE = {"dengue": "A90", "chikungunya": "A92.0", "zika": "A92.5"}
