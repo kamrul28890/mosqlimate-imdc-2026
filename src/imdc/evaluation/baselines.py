@@ -99,6 +99,13 @@ class ClimatologicalQuantileModel:
 
     name = "climatological_quantile"
 
+    def __init__(self, point_estimate: str = "median"):
+        # "median" (default) keeps the empirical 0.5 quantile as the point forecast.
+        # "mean" replaces it with the clamped predictive mean - this fixes the degenerate
+        # all-zero median that episodic-but-real series (e.g. chikungunya in mid-size cities,
+        # >50% zero weeks) produce identically across seasons, which the platform dedups.
+        self.point_estimate = point_estimate
+
     def fit(self, train_df: pd.DataFrame, fold) -> "ClimatologicalQuantileModel":
         df = train_df.copy()
         df["epiweek"] = _epiweek_of_year(df["date"])
@@ -120,10 +127,15 @@ class ClimatologicalQuantileModel:
         rows = []
         target_dates = target_dates.copy()
         target_dates["epiweek"] = _epiweek_of_year(target_dates["date"])
+        i50, i25, i75 = quantile_levels.index(0.5), quantile_levels.index(0.25), quantile_levels.index(0.75)
         for _, row in target_dates.iterrows():
             uf, date, w = row["uf"], row["date"], int(row["epiweek"])
             samples = self._pooled.get(uf, {}).get(w, np.array([0.0]))
             values = np.maximum(0.0, np.quantile(samples, quantile_levels))
+            if self.point_estimate == "mean":
+                # clamped into [lower_50, upper_50] so nesting is preserved; non-zero in peak
+                # weeks and varying across seasons since the pooled history differs per cutoff.
+                values[i50] = float(np.clip(np.mean(samples), values[i25], values[i75]))
             for tau, v in zip(quantile_levels, values):
                 rows.append({"uf": uf, "date": date, "quantile_level": tau, "predicted_value": v})
         return pd.DataFrame(rows)
