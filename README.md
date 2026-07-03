@@ -32,9 +32,10 @@ pick up from here.
 | 8. Paper | 🟡 Draft — `paper/imdc_paper.pdf` |
 | Optional tracks (chik-state, dengue/chik cities) | ✅ Done — 231 validated submission files |
 
-**62 automated tests pass** (`pytest tests/`). Phases 2–4 + 6 documented in
+**64 automated tests pass** (`pytest tests/`). Phases 2–4 + 6 documented in
 `reports/modeling_results_report.pdf`; PNAS-style manuscript draft in `paper/`.
-Full roadmap in `docs/PLAN.md`.
+Project docs: `docs/PLAN.md` (original implementation plan), `docs/IMPROVEMENTS.md`
+(code-level backlog), and **`docs/FUTURE_WORK.md`** (roadmap to the Sept forecast phase + paper).
 
 **To actually submit:** register a model at mosqlimate.org (web UI — the API cannot
 create models; you have none yet), then run `python -m imdc.submission.upload <owner/repo>`
