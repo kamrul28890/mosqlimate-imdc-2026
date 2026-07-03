@@ -105,7 +105,12 @@ def upload_track(repository: str, track: str, dry_run: bool = True, require_clea
         for path in sorted(season_dir.glob("*.csv")):
             geo = path.stem  # "SP" for states, "3550308" (geocode) for cities
             frame = pd.read_csv(path, parse_dates=["date"])
-            adm_kwargs = {"adm_1": UF_TO_ADM1[geo]} if cfg["adm_level"] == 1 else {"adm_2": int(geo)}
+            if cfg["adm_level"] == 1:
+                adm_kwargs = {"adm_1": UF_TO_ADM1[geo]}
+            else:
+                # municipality: platform requires both adm_1 (its state) and adm_2 (geocode).
+                # A city's state IBGE code is the first two digits of its geocode.
+                adm_kwargs = {"adm_1": int(geo[:2]), "adm_2": int(geo)}
             try:
                 validate_submission(frame, season, name=f"{track}/{season}/{geo}")
                 fn = Prediction.validate_prediction if dry_run else upload_prediction
