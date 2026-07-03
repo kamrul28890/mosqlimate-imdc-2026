@@ -28,3 +28,4 @@ prediction_upload.md
 
 # run logs (not results)
 results/metrics/*.log
+email_to_organizers.md
