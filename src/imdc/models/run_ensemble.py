@@ -9,6 +9,7 @@ os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 import pandas as pd
 
 from imdc.config import METRICS_DIR
+from imdc.evaluation.harness import normalized_wis
 from imdc.models.ensemble import inverse_wis_weights, score_wide, vincentization, weighted_ensemble
 
 # Ensemble members chosen by fold-1 (tuning) performance + scale-free relative-WIS, NOT by
@@ -44,9 +45,25 @@ def main():
     by_fold = combined.groupby(["model", "fold_id"])["wis"].mean().unstack("fold_id")
     by_fold.to_csv(METRICS_DIR / "final_leaderboard_by_fold.csv")
 
+    # Official challenge metric: normalized WIS (sum WIS / sum cases), reported all-folds and
+    # excluding the atypical 2024 outlier (fold 2), which dominates the raw mean. This de-biases
+    # the leaderboard away from high-burden states and matches how the organizers rank models.
+    nwis = (
+        normalized_wis(combined, by=["model"]).rename(columns={"normalized_wis": "normWIS_all"})
+        .merge(
+            normalized_wis(combined, by=["model"], exclude_folds=(2,))
+            .rename(columns={"normalized_wis": "normWIS_ex2024"}),
+            on="model",
+        )
+        .sort_values("normWIS_all")
+    )
+    nwis.to_csv(METRICS_DIR / "final_leaderboard_normalized.csv", index=False)
+
     print("Inverse-WIS weights (tuned on fold 1):", {k: round(v, 3) for k, v in weights.items()})
     print("\n=== Final leaderboard (overall mean WIS) ===")
     print(leaderboard.to_string(index=False))
+    print("\n=== Official NORMALIZED WIS (sum WIS / sum cases; lower=better) ===")
+    print(nwis.round(4).to_string(index=False))
     print("\n=== WIS by fold ===")
     print(by_fold.round(0).to_string())
 

@@ -1,10 +1,11 @@
 import numpy as np
+import pandas as pd
 import pytest
 
 from imdc.config import QUANTILE_COLUMNS
 from imdc.data.folds import get_folds
 from imdc.evaluation.baselines import ClimatologicalQuantileModel, NaiveModel, SeasonalNaiveModel
-from imdc.evaluation.harness import run_backtest, score_backtest, summarize
+from imdc.evaluation.harness import normalized_wis, run_backtest, score_backtest, summarize
 from imdc.evaluation.postprocess import enforce_monotonicity
 
 SMALL_UFS = ["SP", "RJ", "AC"]  # one large, one mid, one small state - fast test
@@ -65,3 +66,28 @@ class TestSummarize:
         summary = summarize(scored, by=["fold_id"])
         assert "wis" in summary.columns
         assert len(summary) == 1
+
+
+class TestNormalizedWIS:
+    """Official challenge metric: normalized WIS = sum(WIS)/sum(cases). Hand-computable toy."""
+
+    def _toy(self):
+        return pd.DataFrame({
+            "model": ["a", "a", "b", "b"],
+            "fold_id": [1, 2, 1, 2],
+            "wis": [10.0, 40.0, 20.0, 20.0],
+            "observed_value": [100.0, 100.0, 100.0, 100.0],
+        })
+
+    def test_ratio_of_sums_and_ascending_order(self):
+        out = normalized_wis(self._toy(), by=["model"])
+        d = dict(zip(out["model"], out["normalized_wis"]))
+        assert d["a"] == pytest.approx((10 + 40) / 200)   # 0.25
+        assert d["b"] == pytest.approx((20 + 20) / 200)   # 0.20
+        assert list(out["model"]) == ["b", "a"]           # sorted best-first
+
+    def test_exclude_folds_drops_before_aggregating(self):
+        out = normalized_wis(self._toy(), by=["model"], exclude_folds=(2,))
+        d = dict(zip(out["model"], out["normalized_wis"]))
+        assert d["a"] == pytest.approx(10 / 100)          # fold 1 only
+        assert d["b"] == pytest.approx(20 / 100)

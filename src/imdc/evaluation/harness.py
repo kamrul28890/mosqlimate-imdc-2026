@@ -123,3 +123,18 @@ def summarize(scored: pd.DataFrame, by: list, exclude_folds: tuple = ()) -> pd.D
         "coverage_50", "coverage_80", "coverage_90", "coverage_95",
     ]
     return scored.groupby(by)[metric_cols].mean().reset_index()
+
+
+def normalized_wis(scored: pd.DataFrame, by: list, exclude_folds: tuple = ()) -> pd.DataFrame:
+    """The organizers' headline score: normalized WIS = sum(WIS) / sum(observed cases), by group.
+
+    Unlike `summarize` (a plain mean of per-unit WIS, dominated by high-burden states and the
+    atypical 2024 fold), this ratio-of-sums matches the official 2nd/3rd-IMDC ensemble methodology
+    and is scale-free across regions. Lower is better. `exclude_folds` drops folds first (e.g. the
+    2024 outlier fold 2) so a normal-season number can be reported alongside the all-fold one.
+    """
+    if exclude_folds:
+        scored = scored[~scored["fold_id"].isin(exclude_folds)]
+    g = scored.groupby(by)
+    out = (g["wis"].sum() / g["observed_value"].sum()).reset_index(name="normalized_wis")
+    return out.sort_values("normalized_wis").reset_index(drop=True)
