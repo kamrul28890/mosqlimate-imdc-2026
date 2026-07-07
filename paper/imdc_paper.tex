@@ -20,9 +20,12 @@
 
 \title{\textbf{Probabilistic dengue and chikungunya forecasting in Brazil:\\
 metric-dependent model rankings, regime-shift fragility, and conformal ensembles}}
-\author[1]{Author One}
-\author[1]{Author Two}
-\affil[1]{Institution (\texttt{DRAFT: placeholder authors and affiliations})}
+\author[1]{Md Kamruzzaman Kamrul}
+\author[2]{Eashraque Jahan Easha}
+\author[3]{Abdullah Al Helal}
+\affil[1]{Purdue University, West Lafayette, IN, USA}
+\affil[2]{University of Denver, Denver, CO, USA}
+\affil[3]{Oklahoma State University, Stillwater, OK, USA}
 \date{\today}
 
 \begin{document}
@@ -74,7 +77,7 @@ adding more data or model complexity did not help. Our full pipeline is openly a
 \section{Introduction}
 Dengue is among the fastest-spreading mosquito-borne diseases, and Brazil bears one of the largest
 national burdens \citep{lowe2021,colon2021}. The 2024 season broke the national record by a wide
-margin, with a peak of 440{,}538 reported cases in a single epidemiological week and an annual total
+margin, with a peak of 451{,}578 reported cases in a single epidemiological week and an annual total
 near 6.67 million, roughly four times the next-largest year on record. Transmission is shaped by
 climate, and the 2023--24 El Ni\~no is one of several drivers implicated in the surge. Against this
 background, arboviral forecasting has moved from point prediction toward full probabilistic
@@ -130,11 +133,12 @@ reported separately.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.92\textwidth]{../results/figures/national_weekly_trends.png}
-\caption{\textbf{National weekly dengue trend and study design.} Weekly reported dengue cases
-aggregated to the national level, 2010--2026. The 2024 season stands roughly four times above any
-prior year. Model evaluation uses four official retrospective seasons, each with a training cutoff,
-a 15-week reporting gap, and a target window; forecasts are scored only on the target window.}
+\includegraphics[width=0.95\textwidth]{../results/figures/paper_design.png}
+\caption{\textbf{Data and study design.} (A) Weekly reported dengue cases aggregated to the national
+level, 2010--2026; the 2024 season stands roughly four times above any prior year. (B) The four
+official retrospective seasons form a rolling backtest. Each has a training cutoff (all data up to
+the cutoff is used for fitting), a 15-week reporting gap, and an evaluation window on which forecasts
+are scored. Fold 2 covers the 2024 outbreak and fold 4 is partially resolved.}
 \label{fig:overview}
 \end{figure}
 
@@ -257,7 +261,10 @@ disagreement is not a paradox. A metric that rewards accuracy on a few very larg
 different models than one that rewards accuracy on the many small states, and the 2024 season
 inflates the mean for whichever model handles it least badly. We therefore report both magnitude-
 and unit-weighted skill, and we caution that an epidemic-forecasting leaderboard reporting a single
-aggregate can mislead.
+aggregate can mislead. The cross-state skew has a clear geographic structure (Fig~\ref{fig:skillmap}):
+forecast difficulty, measured by normalized WIS, is greatest in the dense, high-incidence southeastern
+states and lowest in the low-incidence interior, so magnitude-weighted skill is determined by a few
+states.
 
 \begin{figure}[t]
 \centering
@@ -269,6 +276,16 @@ to first on ordinary seasons, and the gradient-boosted model falls from third to
 ensembles stay near the top of both. Values in parentheses are mean WIS (left) and normalized WIS
 (right).}
 \label{fig:relwis}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.72\textwidth]{../results/figures/paper_skill_map.png}
+\caption{\textbf{Geographic structure of forecast skill.} Normalized WIS of the conformal ensemble by
+state (lower is better). Forecasting is hardest in the dense, high-incidence southeastern states and
+in the Federal District, and easiest in the low-incidence interior, which is why magnitude-weighted
+skill is dominated by a few states. Espírito Santo (grey) is excluded from the challenge.}
+\label{fig:skillmap}
 \end{figure}
 
 \subsection{Calibration and its correction}\label{sec:calibration}
@@ -502,8 +519,10 @@ per-fold tables, the ensemble-member and weight robustness analysis, and an item
 reporting checklist \citep{pollett2021}.
 
 \section*{Data and code availability}
-All code, data-processing pipeline, backtests, figures, and validated submissions are openly
-available at the project repository (URL to be inserted on submission).
+The pipeline was developed by team Neural Earth for the 3rd Infodengue--Mosqlimate Dengue Challenge.
+All code, data-processing pipeline, backtests, figures, and validated submissions are openly available
+at \url{https://github.com/kamrul28890/3rd_imdc_purdue_neuralearth}. The surveillance and covariate
+data are distributed by the challenge through the Mosqlimate platform.
 
 \bibliographystyle{unsrtnat}
 \begin{thebibliography}{99}
