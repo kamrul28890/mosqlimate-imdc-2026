@@ -11,6 +11,11 @@ with the end goal of a competitive submission and a PNAS-style journal paper.
 
 Contact: kamrul28890@gmail.com · Platform account: `kamrul28890`
 
+> 📋 **IMDC documentation (per the challenge guidelines):** [`MODEL_CARD.md`](MODEL_CARD.md)
+> answers, in order, the required items — team & member contributions, repository structure,
+> libraries & dependencies, data & variables, model training, how the **EW‑25 data-availability
+> rule** was met, how the **prediction intervals** were computed, and DOI references.
+
 This README is also the entry point for **resuming work on another machine** — it records
 what is done, where everything lives, how to set up the environment, and how to
 pick up from here.
